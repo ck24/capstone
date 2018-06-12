@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,left=16mm, right=16mm, top=15mm, bottom=20mm]{geometry}
+\usepackage{hyperref}
+\usepackage{multicol}
+
+\def\sectionheader#1{\section*{#1}\vskip -0.3cm\hrule\vskip 0.3cm}
+
+\title{Udacity Machine Learning Nanodegree \\ Capstone Project}
+\author{Carsten Kr\"uger}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Definition}
+
+\subsection{Project Overview}
+
+Machine learning is used in a wide variety of fields today. 
+Luca Talenti et al. \cite{malaria} for example used a classification model to predict 
+the severity criteria in imported malaria. In this project, machine learning will be used
+to build a model that can decide based on the role information of an employee whether
+that employee shall have access to a specific resource \cite{kaggleAmazon}. 
+\\ \\
+An employee that has to use a computer in order to fulfill their tasks, needs access 
+to certain areas of software programs or access rights to execute actions such as read, 
+write or delete a document. While working, employees may encounter that they don't have a 
+concrete access right required to perform the task at hand. In those situations a supervisor or an 
+administrator has to grant them access. The process of discovering that a certain access 
+right is missing and removing that obstacle is both time-consuming and costly.
+A model that can predict which access rights are needed based on the current role of an 
+employee is therefore relevant.
+    
+\subsection{Problem Statement}
+
+The problem stems from the {\it Amazon.com Employee Access Challenge Kaggle Competition} 
+\cite{kaggleAmazon} and is there described as follows:
+
+{\it ``The objective of this competition is to build a model, learned using historical data, that
+ will determine an employee's access needs, such that manual access transactions 
+ (grants and revokes) are minimized as the employee's attributes change over time. 
+ The model will take an employee's role information and a resource code and will return whether 
+ or not access should be granted.''}
+\\ \\
+This is a binary classification problem.
+
+\subsection{Metrics}
+
+\section{Analysis}
+
+\subsection{Data Exploration}
+
+\subsection{Exploratory Visualization}
+
+\subsection{Algorithms and Techniques}
+
+\subsection{Benchmark}
+
+\section{Methodology}
+
+\subsection{Data Preprocessing}
+
+\subsection{Implementation}
+
+\subsection{Refinement}
+
+\section{Results}
+
+\subsection{Model Evaluation and Validation}
+
+\subsection{Justification}
+
+\section{Conclusion}
+
+\subsection{Free-Form Visualization}
+
+\subsection{Reflection}
+
+\subsection{Improvement}
+
+\begin{thebibliography}{9}
+
+    \bibitem{malaria}
+    L1 logistic regression as a feature selection step for training stable 
+    classification trees for the prediction of severity criteria in imported malaria
+
+    \textit{Luca Talenti, Margaux Luck, Anastasia Yartseva, Nicolas Argy, Sandrine Houzé, Cecilia Damon}
+
+    \href{https://arxiv.org/abs/1511.06663}{arXiv:1511.06663 [cs.LG]}
+
+    \bibitem{kaggleAmazon}
+    Amazon.com -- Employee Access Challenge 
+
+    \textit{Predict an employee's access needs, given his/her job role.}
+
+    \href{https://www.kaggle.com/c/amazon-employee-access-challenge}
+    {https://www.kaggle.com/c/amazon-employee-access-challenge},
+
+
+    \bibitem{rocCurve}
+    Receiver operating characteristic 
+
+    \href{https://en.wikipedia.org/wiki/Receiver_operating_characteristic}
+    {https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}
+
+\end{thebibliography}
+
+\end{document}
+    
+    
+    
