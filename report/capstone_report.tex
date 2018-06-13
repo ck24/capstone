@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[a4paper,left=16mm, right=16mm, top=15mm, bottom=20mm]{geometry}
+\usepackage[a4paper,left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
 \usepackage{hyperref}
 \usepackage{multicol}
 
@@ -37,13 +37,26 @@ employee is therefore relevant.
 The problem stems from the {\it Amazon.com Employee Access Challenge Kaggle Competition} 
 \cite{kaggleAmazon} and is there described as follows:
 
-{\it ``The objective of this competition is to build a model, learned using historical data, that
+{\it ``The objective of this competition is to build a model, learned using 
+historical data, that
  will determine an employee's access needs, such that manual access transactions 
  (grants and revokes) are minimized as the employee's attributes change over time. 
  The model will take an employee's role information and a resource code and will return whether 
  or not access should be granted.''}
 \\ \\
-This is a binary classification problem.
+This is a supervised learning problem because the dataset is labeled. 
+Anticipated solution:
+
+\begin{enumerate}
+    \item Explore data in order to gain insights.
+    \item Train many different binary classification models using standard parameters.
+    \item Apply transformations or regularizations.
+    \item Compare plain models and transformed models.
+    \item Pick the three best models based on the {\it auc} \cite{rocCurve} metric.
+    \item Tweak the hyper-parameters for each of the chosen models in order to
+    improve their performance.
+    \item Evaluate the tweaked models on the test set.
+\end{enumerate}
 
 \subsection{Metrics}
 

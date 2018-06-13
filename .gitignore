@@ -3,3 +3,5 @@
 *.out
 proposal/
 data/
+source/env/
+source/.ipynb_checkpoints
