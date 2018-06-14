@@ -2,8 +2,18 @@
 \usepackage[a4paper,left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
 \usepackage{hyperref}
 \usepackage{multicol}
+\usepackage{graphicx}
 
 \def\sectionheader#1{\section*{#1}\vskip -0.3cm\hrule\vskip 0.3cm}
+
+\def\image#1#2#3#4
+{
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[width=#4]{#1}
+        \caption{#2 \label{#3}}
+    \end{figure}
+}
 
 \title{Udacity Machine Learning Nanodegree \\ Capstone Project}
 \author{Carsten Kr\"uger}
@@ -21,7 +31,7 @@ Machine learning is used in a wide variety of fields today.
 Luca Talenti et al. \cite{malaria} for example used a classification model to predict 
 the severity criteria in imported malaria. In this project, machine learning will be used
 to build a model that can decide based on the role information of an employee whether
-that employee shall have access to a specific resource \cite{kaggleAmazon}. 
+that employee shall have access to a specific resource. 
 \\ \\
 An employee that has to use a computer in order to fulfill their tasks, needs access 
 to certain areas of software programs or access rights to execute actions such as read, 
@@ -52,17 +62,36 @@ Anticipated solution:
     \item Train many different binary classification models using standard parameters.
     \item Apply transformations or regularizations.
     \item Compare plain models and transformed models.
-    \item Pick the three best models based on the {\it auc} \cite{rocCurve} metric.
-    \item Tweak the hyper-parameters for each of the chosen models in order to
-    improve their performance.
+    \item Pick the three best models based on the performance metric.
+    \item Tweak the chosen models in order to improve model performance.
     \item Evaluate the tweaked models on the test set.
+    \item Conclusion
 \end{enumerate}
 
 \subsection{Metrics}
 
+To quantify model performance, the area under the ROC curve will be used.
+This metric is appropriate for this type of project because it works well
+even if the classes are not balanced. Moreover it was the metric of choice
+in the herein before mentioned Kaggle competition.
+The metric is derived by first constructing the ROC curve and then 
+calculating the area under that curve. 
+
+{\it``The ROC curve is created by plotting the true positive rate against the false 
+positive rate at various threshold settings''} \cite{rocCurve},
+ 
+where the threshold is a value between 0 and 1 that determines how sure the model needs 
+to be in order to classify a data entry as positive (access granted in the problem at hand). 
+For example if the threshold was 0.7 the model would have to have calculated a probability 
+of at least 70 $\%$ to classify a data entry as positive.
+
 \section{Analysis}
 
 \subsection{Data Exploration}
+
+There are 32769 entries in the dataset with no missing values. It has 10 attributes.
+All attributes are categorial. The target attribute is called {\tt ACTION}.
+\image{images/dataset_head.png}{Top five rows in the dataset}{figure_01}{140mm}
 
 \subsection{Exploratory Visualization}
 
