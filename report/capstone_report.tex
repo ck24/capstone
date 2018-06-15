@@ -15,6 +15,10 @@
     \end{figure}
 }
 
+\newcommand\fnurl[2]{%
+\href{#2}{#1}\footnote{\url{#2}}%
+}
+
 \title{Udacity Machine Learning Nanodegree \\ Capstone Project}
 \author{Carsten Kr\"uger}
 \date{\today}
@@ -89,9 +93,33 @@ of at least 70 $\%$ to classify a data entry as positive.
 
 \subsection{Data Exploration}
 
-There are 32769 entries in the dataset with no missing values. It has 10 attributes.
-All attributes are categorial. The target attribute is called {\tt ACTION}.
-\image{images/dataset_head.png}{Top five rows in the dataset}{figure_01}{140mm}
+There are $32769$ entries in the dataset with no missing values. 
+Figure \ref{first_5} shows the first five rows in the dataset.
+
+\image{images/dataset_head.png}{Top five rows in the dataset}{first_5}{140mm}
+
+The dataset has ten attributes. All attributes are categorial. 
+One attribute called {\tt RESOURCE} holds the ID of the resource 
+for which the access has been granted or denied. 
+There are $7518$ different resources in the dataset.
+The target attribute is called {\tt ACTION} and it is unbalanced 
+because more than $94 \%$ of the rows have an {\tt ACTION}-attribute 
+of $1$ (access granted) whereas only roughly $6 \%$ have a $0$ (access denied).
+The accuracy metric is therefore inadequate for this dataset because even
+a dumb model that always predicts $1$ will have a very high accuracy.
+The other eight columns provide role information 
+for an \fnurl{employee }{https://www.kaggle.com/c/amazon-employee-access-challenge/data}:
+
+\begin{itemize}
+    \item {\tt MGR\_ID} - ID of the manager of employee ($4243$ different values)
+    \item {\tt ROLE\_ROLLUP\_1} - Role ID of employee ($128$ different values)
+    \item {\tt ROLE\_ROLLUP\_2} - Second role ID of employee ($177$ different values)
+    \item {\tt ROLE\_DEPTNAME} - Role department description ($449$ different values)
+    \item {\tt ROLE\_TITLE} - Role business title ($343$ different values)
+    \item {\tt ROLE\_FAMILY} -  Role family description ($67$ different values)
+    \item {\tt ROLE\_FAMILY\_DESC} - Extended role family description ($2358$ different values)
+    \item {\tt ROLE\_CODE} - Company role code; this code is unique to each role ($343$ different values)
+\end{itemize}
 
 \subsection{Exploratory Visualization}
 
