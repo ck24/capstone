@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[a4paper,left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
+\usepackage[a4paper,left=16mm, right=16mm, top=20mm, bottom=20mm]{geometry}
 \usepackage[english]{babel}
 \usepackage{hyperref}
 \usepackage{multicol}
@@ -140,7 +140,38 @@ a dumb model that always predicts $1$ would have a very high accuracy.
 
 \subsection{Algorithms and Techniques}
 
+First of all it is important to put aside a test set. This set will not be touched until the very end
+when all models have been trained and optimized. To generate the test set
+\fnurl{stratified shuffle split}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedShuffleSplit.html}  
+will be used which preserves the percentage of samples for each class.
+A preprocessing pipeline will be created, that selects role attributes and applies
+one-hot encoding to them. This step is important because, as mentioned before,
+the attributes are categorial and two values that are close to each other are not
+more similar than two values with a larger distance.
+Different binary classification models with standard parameters will be created.
+They will be initialized with a fixed random seed in order to make the results reproducable.
+There performance will be measured using scikit learn's 
+\fnurl{cross validation score}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html} 
+function in order to circumvent overfitting. 
+The best models will be tweaked by trying different sets of parameters.
+The goal is to furhter increase their performance.
+Finally the previously generated test set will be used to determine
+whether the final model generalizes well.
+
 \subsection{Benchmark}
+
+An out of the box logistic regression model will be used as the benchmark for 
+this project, because the model is fast, simple to implement and to interpret 
+and should give far better results than random guessing for the problem at hand.
+\\ \\
+Because the problems stems from a Kaggle competition, as a secondary benchmark, 
+the result of the final solution will be compared to the result of the solution 
+of the team that won the competition. 
+The submissions to the competition were judged on the 
+{\it area under the ROC curve (auc)} metric. 
+Therefore this metric will be used to compare the results. 
+The winning team got an {\it auc} value 
+of $0.92360$, which is an excellent result.
 
 \section{Methodology}
 
