@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[a4paper,left=20mm, right=20mm, top=20mm, bottom=20mm]{geometry}
+\usepackage[english]{babel}
 \usepackage{hyperref}
 \usepackage{multicol}
 \usepackage{graphicx}
@@ -102,13 +103,9 @@ The dataset has ten attributes. All attributes are categorial.
 One attribute called {\tt RESOURCE} holds the ID of the resource 
 for which the access has been granted or denied. 
 There are $7518$ different resources in the dataset.
-The target attribute is called {\tt ACTION} and it is unbalanced 
-because more than $94 \%$ of the rows have an {\tt ACTION}-attribute 
-of $1$ (access granted) whereas only roughly $6 \%$ have a $0$ (access denied).
-The accuracy metric is therefore inadequate for this dataset because even
-a dumb model that always predicts $1$ will have a very high accuracy.
+The target attribute is called {\tt ACTION}.
 The other eight columns provide role information 
-for an \fnurl{employee }{https://www.kaggle.com/c/amazon-employee-access-challenge/data}:
+for an \fnurl{employee}{https://www.kaggle.com/c/amazon-employee-access-challenge/data}:
 
 \begin{itemize}
     \item {\tt MGR\_ID} - ID of the manager of employee ($4243$ different values)
@@ -120,8 +117,26 @@ for an \fnurl{employee }{https://www.kaggle.com/c/amazon-employee-access-challen
     \item {\tt ROLE\_FAMILY\_DESC} - Extended role family description ($2358$ different values)
     \item {\tt ROLE\_CODE} - Company role code; this code is unique to each role ($343$ different values)
 \end{itemize}
+\noindent
+Because the eight attributes that describe the role of an employee and the resource
+attribute are categorial, they will be vectorized. 
+This is achieved by using one-hot encoding. For example the {\tt ROLE\_FAMILY}-attribute
+has $67$ different categories. Each row in the dataset that has been one-hot encoded 
+will contain one entry for each category. The entry will be $1$ (hot) only for the 
+entry corresponding to the current role family  and $0$ (cold) for the 
+$66$ other role families. This example shows that the number of input attributes will
+increase tremendously.
+
 
 \subsection{Exploratory Visualization}
+
+Figure \ref{histogram} shows that the {\tt ACTION}-attribute is highly unbalanced. 
+In fact more than $94 \%$ of the rows have an {\tt ACTION}-attribute 
+of $1$ (access granted) whereas only roughly $6 \%$ have a $0$ (access denied).
+The accuracy metric is therefore inadequate for this dataset because even
+a dumb model that always predicts $1$ would have a very high accuracy.
+
+\image{images/action_histogram.png}{Histogram for target attribute}{histogram}{100mm}
 
 \subsection{Algorithms and Techniques}
 
