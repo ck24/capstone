@@ -4,6 +4,12 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 \usepackage{graphicx}
+\usepackage{listings} 
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \def\sectionheader#1{\section*{#1}\vskip -0.3cm\hrule\vskip 0.3cm}
 
@@ -25,6 +31,23 @@
 \date{\today}
 
 \begin{document}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 \maketitle
 
@@ -127,7 +150,6 @@ entry corresponding to the current role family  and $0$ (cold) for the
 $66$ other role families. This example shows that the number of input attributes will
 increase tremendously.
 
-
 \subsection{Exploratory Visualization}
 
 Figure \ref{histogram} shows that the {\tt ACTION}-attribute is highly unbalanced. 
@@ -149,12 +171,19 @@ one-hot encoding to them. This step is important because, as mentioned before,
 the attributes are categorial and two values that are close to each other are not
 more similar than two values with a larger distance.
 Different binary classification models with standard parameters will be created.
+The classifiers trained in this project are Logistic Regression, 
+Decision Tree, SVM, Random Forest, AdaBoost and XGBoost.
 They will be initialized with a fixed random seed in order to make the results reproducable.
 There performance will be measured using scikit learn's 
 \fnurl{cross validation score}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html} 
 function in order to circumvent overfitting. 
 The best models will be tweaked by trying different sets of parameters.
-The goal is to furhter increase their performance.
+The goal is to furhter increase their performance. The best set of hyperparameters
+for the different models will be determined by doing a
+\fnurl{grid search}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html}.
+The grid search function will try out all different combinations of 
+hyperparameters and values that it gets passed as an argument using cross-validation. 
+This is far more convenient than the tedious task of trying out a bunch of hyperparameters manually.
 Finally the previously generated test set will be used to determine
 whether the final model generalizes well.
 
@@ -177,7 +206,80 @@ of $0.92360$, which is an excellent result.
 
 \subsection{Data Preprocessing}
 
+Compared to the samples with a positive
+class (access granted) the dataset contains very few samples with a negative class
+(access denied). The first preprocessing step is therefore to put aside a test set 
+that preserves the percentage of samples for each class. As mentioned before this is 
+achieved by using a stratified shuffle split.
+If a standard random split had been used to
+split the dataset into a training and testing set, it would be possible that
+for example the training set would not contain a single negative sample which
+would have certainly a negative impact on the performance of the classifiers.
+The second preprocessing step is to one-hot encode the predictive attributes.
+This is done by using sklearn's
+\fnurl{{\it OneHotEncoder}}{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}.
+This transforms all the categorial attributes to binary attributes and fixes the
+issue that the models would assume that two nearby values of a categorial
+attribute are more similar than two distant values.
+
 \subsection{Implementation}
+
+The first step is to make some imports and to read the dataset:
+\begin{lstlisting}[frame=single]
+    import numpy as np
+    import pandas as pd
+    random_state = 42
+    df = pd.read_csv('../data/train.csv')
+\end{lstlisting}
+    
+The second step is to create the stratified training and test sets:
+
+\begin{lstlisting}[frame=single]
+    from sklearn.model_selection import StratifiedShuffleSplit
+    sss = StratifiedShuffleSplit(n_splits=1, test_size=0.25, random_state=random_state)
+    for train_index, test_index in sss.split(df, df['ACTION']):
+        train_set, test_set = df.loc[train_index], df.loc[test_index]
+\end{lstlisting}
+
+The third step is to extract the labels and the attributes for the training set:
+
+\begin{lstlisting}[frame=single]
+    access = train_set.drop('ACTION', axis=1)
+    access_labels = train_set['ACTION'].copy()
+\end{lstlisting}
+
+The fourth step uses a {\tt DataFrameSelector}:
+
+\begin{lstlisting}[frame=single]
+    # DataFrameSelector class, taken from "Hands-On Machine Learning with Scikit-Learn & 
+    # Tensorflow by Aurélion Géron (O'Reilly). Copyright 2017 Aurélion Géron, 978-1-491-96229-9, Page 41
+    from sklearn.base import BaseEstimator, TransformerMixin
+    class DataFrameSelector(BaseEstimator, TransformerMixin):
+        def __init__(self, attribute_names):
+            self.attribute_names = attribute_names
+        def fit(self, X, y=None):
+            return self
+        def transform(self, X):
+            return X[self.attribute_names].values
+\end{lstlisting}
+
+With this class a pipeline is created that one-hot encodes the attributes of the 
+training set:
+
+\begin{lstlisting}[frame=single]
+    # get attributes
+    attributes = access.columns.values.tolist()
+
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import OneHotEncoder
+
+    # one-hot encode the categorial attributes
+    pipeline = Pipeline([
+        ('selector', DataFrameSelector(attributes)),
+        ('encoder', OneHotEncoder())
+    ])
+    access_1hot = pipeline.fit_transform(access)
+\end{lstlisting}
 
 \subsection{Refinement}
 
