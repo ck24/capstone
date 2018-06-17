@@ -231,8 +231,8 @@ The first step is to make some imports and to read the dataset:
     random_state = 42
     df = pd.read_csv('../data/train.csv')
 \end{lstlisting}
-    
-The second step is to create the stratified training and test sets:
+\noindent  
+The second step is to create the stratified training and test sets with a test size of $25 \%$:
 
 \begin{lstlisting}[frame=single]
     from sklearn.model_selection import StratifiedShuffleSplit
@@ -240,14 +240,14 @@ The second step is to create the stratified training and test sets:
     for train_index, test_index in sss.split(df, df['ACTION']):
         train_set, test_set = df.loc[train_index], df.loc[test_index]
 \end{lstlisting}
-
+\noindent
 The third step is to extract the labels and the attributes for the training set:
 
 \begin{lstlisting}[frame=single]
     access = train_set.drop('ACTION', axis=1)
     access_labels = train_set['ACTION'].copy()
 \end{lstlisting}
-
+\noindent
 The fourth step uses a {\tt DataFrameSelector}:
 
 \begin{lstlisting}[frame=single]
@@ -262,8 +262,8 @@ The fourth step uses a {\tt DataFrameSelector}:
         def transform(self, X):
             return X[self.attribute_names].values
 \end{lstlisting}
-
-With this class a pipeline is created that one-hot encodes the attributes of the 
+\noindent
+Using the {\tt DataFrameSelector} a pipeline is built that one-hot encodes the attributes of the 
 training set:
 
 \begin{lstlisting}[frame=single]
@@ -280,8 +280,54 @@ training set:
     ])
     access_1hot = pipeline.fit_transform(access)
 \end{lstlisting}
+\noindent
+The sixth step is to create a function that takes a trained model and an integer
+number of folds as an input and displays the cross validation scores based
+on the area under the ROC curve metric ({\tt auc}) for the $n$-folds,
+their mean and their standard deviation:
+
+\begin{lstlisting}[frame=single]
+    def display_auc_scores(model, folds=10):
+        scores = cross_val_score(model, access_1hot, access_labels, scoring='roc_auc', cv=folds)
+        print('Scores: ', scores)
+        print('Mean: ', scores.mean())
+        print('Std: ', scores.std())
+\end{lstlisting}
+\noindent
+The final step is to actually create and train the different models. 
+The following listing shows the creation and training 
+of a logistic regression classifier:
+
+\begin{lstlisting}[frame=single]
+    from sklearn.linear_model import LogisticRegression
+    log_reg = LogisticRegression(random_state=random_state)
+    log_reg.fit(access_1hot, access_labels)
+    display_auc_scores(log_reg, folds=10)
+\end{lstlisting}
 
 \subsection{Refinement}
+The initial results for the {\bf logistic regression} benchmark model
+were the following:
+\begin{lstlisting}[frame=single]
+    ('Scores: ', array([ 0.86783489,  0.79915939,  0.79383764,  0.87851276,  0.85076963,
+        0.86988866,  0.86555532,  0.85809023,  0.84325891,  0.86433091]))
+    ('Mean: ', 0.84912383267572067)
+    ('Std: ', 0.027958452541170693)
+\end{lstlisting}
+\noindent
+The initial results for all models ordered by descending mean {\it auc} score:
+
+\begin{center}
+    \begin{tabular}{l|r|r}
+        {\bf Model} & {\bf Mean auc} & {\bf Standard Deviation} \\ \hline 
+        Logistic Regression & $0.84912$ & $0.02796$ \\
+        Random Forest & $0.82307$ & $0.02451$ \\
+        XGBoost & $0.75264$ & $0.02680$ \\
+        SVM & $0.75006$ & $0.03236$ \\
+        AdaBoost & $0.74251$ & $0.02921$ \\
+        Decision Tree & $0.70193$ & $0.02216$ \\
+    \end{tabular}
+\end{center}
 
 \section{Results}
 
