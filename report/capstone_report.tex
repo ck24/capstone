@@ -158,7 +158,7 @@ of $1$ (access granted) whereas only roughly $6 \%$ have a $0$ (access denied).
 The accuracy metric is therefore inadequate for this dataset because even
 a dumb model that always predicts $1$ would have a very high accuracy.
 
-\image{images/action_histogram.png}{Histogram for target attribute}{histogram}{100mm}
+\image{images/action_histogram.png}{Histogram for target attribute}{histogram}{120mm}
 
 \subsection{Algorithms and Techniques}
 
@@ -178,11 +178,10 @@ There performance will be measured using scikit learn's
 \fnurl{cross validation score}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html} 
 function in order to circumvent overfitting. 
 The best models will be tweaked by trying different sets of parameters.
-The goal is to furhter increase their performance. The best set of hyperparameters
+The goal is to furhter increase their performance. The better set of hyperparameters
 for the different models will be determined by doing a
 \fnurl{grid search}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html}.
-The grid search function will try out all different combinations of 
-hyperparameters and values that it gets passed as an argument using cross-validation. 
+Grid search will evaluate all combinations of a specified amount of parameters and values.
 This is far more convenient than the tedious task of trying out a bunch of hyperparameters manually.
 Finally the previously generated test set will be used to determine
 whether the final model generalizes well.
@@ -306,7 +305,7 @@ of a logistic regression classifier:
 \end{lstlisting}
 
 \subsection{Refinement}
-The initial results for the {\bf logistic regression} benchmark model
+The initial results for the {\bf logistic regression} benchmark model on the training-set
 were the following:
 \begin{lstlisting}[frame=single]
     ('Scores: ', array([ 0.86783489,  0.79915939,  0.79383764,  0.87851276,  0.85076963,
@@ -315,7 +314,8 @@ were the following:
     ('Std: ', 0.027958452541170693)
 \end{lstlisting}
 \noindent
-The initial results for all models ordered by descending mean {\it auc} score:
+The initial results for all models ordered by descending mean {\it auc} score 
+on the training-set:
 
 \begin{center}
     \begin{tabular}{l|r|r}
@@ -328,6 +328,25 @@ The initial results for all models ordered by descending mean {\it auc} score:
         Decision Tree & $0.70193$ & $0.02216$ \\
     \end{tabular}
 \end{center}
+\noindent
+To refine the initial results it was first tried to improve the random forest model
+by discovering a good value for the {\tt n\_estimators}-parameter
+corresponding to the number of trees in the forest. The
+default value is $10$ and values of $5, 10, 20, 30, 40$ and $50$ have been tested.
+The best number of trees was discovered to be $50$. With this parameter-change
+the model's mean {\it auc} score on the training-set increased to $0.85387$.
+Secondly the number of minimum required samples to split an internal node has been
+examined. The default value is $2$ and values of $2, 5$ and $10$ have been tested.
+The best value has discovered to be $5$. With this additional change the
+mean {\it auc} score on the training-set increased to $0.85687$. By the setting the
+max depth to $500$ the mean {\it auc} score got up to $0.85706$. Changing
+the {\tt min\_samples\_leaf} parameter from the default
+value of $1$ to $2, 3, 4, 10, 50, 100$ brought no improvement. Finally the 
+maximum number of features to consider when looking for the best split has been
+tried to improve. The values {\it sqrt}, $5, 10, 20$ and $50$ have been tried.
+Among those values, $10$ has been discovered to be the best and with that
+the mean {\it} auc score on the training-set increased to $0.86371$.
+
 
 \section{Results}
 
@@ -342,6 +361,9 @@ The initial results for all models ordered by descending mean {\it auc} score:
 \subsection{Reflection}
 
 \subsection{Improvement}
+
+Probably the number of trees in the random forest model could be increased to 
+improve the performance. But this also increases the computation time and has therefore be neglected.
 
 \begin{thebibliography}{9}
 
