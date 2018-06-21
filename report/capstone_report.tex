@@ -329,7 +329,9 @@ on the training-set:
     \end{tabular}
 \end{center}
 \noindent
-To refine the initial results it was first tried to improve the random forest model
+To refine the initial results the best three models were chosen to being tweaked
+with the exception of the logistic regression model that was used as the benchmark.
+It was first tried to improve the random forest model
 by discovering a good value for the {\tt n\_estimators}-parameter
 corresponding to the number of trees in the forest. The
 default value is $10$ and values of $5, 10, 20, 30, 40$ and $50$ have been tested.
@@ -346,8 +348,22 @@ maximum number of features to consider when looking for the best split has been
 tried to improve. The values {\it sqrt}, $5, 10, 20$ and $50$ have been tried.
 Among those values, $10$ has been discovered to be the best and with that
 the mean {\it} auc score on the training-set increased to $0.86371$.
-
-
+\\ \\
+Secondly the SVM model has been improved by doing a grid-search 
+with the values $[0.01, 0.1, 1, 10]$ for the
+parameter {\tt gamma} and $[0.1, 1, 10, 100]$ for the parameter {\tt C}.
+The best values were $1$ for {\tt gamma} and $10$ for {\tt C}. This search
+took several hours. Even the score calculation of the refined SVM model
+took a long time. Because of the extremely high computational costs, 
+other parameter settings for the SVM model were not tried.
+The refined SVM got a mean {\it auc} score on the training-set of $0.85768$.
+\\ \\
+The last model being refined was the XGBoost model. The first grid-search
+consisted of the parameters {\tt max\_depth} and {\tt min\_child\_width}
+for which the values $[5, 6, 7, 8, 9, 10]$ and $[1, 2, 3, 4]$ were used respectively.
+Out of these parameter-sets the best values were $10$ for the max depth
+and $1$ for the other parameter. With this parameter-setting the 
+mean {\it auc} score on the training-set inccreased to $0.81260$.
 \section{Results}
 
 \subsection{Model Evaluation and Validation}
