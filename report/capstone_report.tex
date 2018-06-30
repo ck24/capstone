@@ -315,7 +315,7 @@ were the following:
 \end{lstlisting}
 \noindent
 The initial results for all models ordered by descending mean {\it auc} score 
-on the training-set:
+on the training-set were the following:
 
 \begin{center}
     \begin{tabular}{l|r|r}
@@ -329,8 +329,14 @@ on the training-set:
     \end{tabular}
 \end{center}
 \noindent
+\\ \\
 To refine the initial results the best three models were chosen to being tweaked
 with the exception of the logistic regression model that was used as the benchmark.
+For each hyperparameter that has been modified the default value was the basis. 
+Values that are near this default value were tested as well as some values
+that are farther away. In the end the best parameters according to the 
+{\it auc} scores obtained by doing a grid search cross validation were chosen.
+\\ \\
 It was first tried to improve the random forest model
 by discovering a good value for the {\tt n\_estimators}-parameter
 corresponding to the number of trees in the forest. The
@@ -360,13 +366,38 @@ The refined SVM got a mean {\it auc} score on the training-set of $0.85768$.
 \\ \\
 The last model being refined was the XGBoost model. The first grid-search
 consisted of the parameters {\tt max\_depth} and {\tt min\_child\_width}
-for which the values $[5, 6, 7, 8, 9, 10]$ and $[1, 2, 3, 4]$ were used respectively.
+for which the values $[5, 6, 7, 8, 9, 10]$ and $[1, 2, 3, 4, 5]$ were used respectively.
 Out of these parameter-sets the best values were $10$ for the max depth
 and $1$ for the other parameter. With this parameter-setting the 
-mean {\it auc} score on the training-set inccreased to $0.81260$.
+mean {\it auc} score on the training-set inccreased to $0.81301$.
+Trying other values such as $[6, 7, 8, 9, 10, 50, 100$ for the {\tt min\_child\_width}
+parameter did not lead to better results. For the {\tt gamma} parameter the
+value $0.5$ was found to give the best results on the training set. 
+The default value is $0.0$ and values of $0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6$ and $1.0$
+have been tried. After this parameter twist has been applied the score got up to
+$0.81489$. The best learning rate was found to be $0.4$. With this little change
+the score increased to $0.82793$. Next, I've tried to find a good value for the
+number of boosted trees to fit. After trying many different values I discovered
+that the best value seems to be $170$. Using this value for the parameter led
+to a mean score of $0.83418$. After that I've tried different values for
+the subsample ratio of the training instance and the subsample ratio of columns when
+each each tree is constructed. This are the parameters {\tt subsample} and
+{\tt colsample\_bytree}. The best value for the {\tt subsample} parameter
+seems to be the default value of $1.0$. For the {\tt colsample\_bytree} parameter
+I found a value of $0.9$ to be better. With this adjustment the score
+increased to $0.83470$. I was not able to find better values for the regularization
+parameters {\tt reg\_alpha} and {\tt reg\_lambda} than the defaults. The same holds 
+true for the parameter that is used for balancing of positive and negative weights.
+After that I again tried some values for the number of boosted trees and discovered
+that much higher numbers led to somewhat improved scores on the training set.
+With a value of $1000$ the score increased to $0.83897$. But the change comes with
+a cost the computation time increased perceptibly. Therefore higher numbers
+were not tested for this parameter.
 \section{Results}
 
 \subsection{Model Evaluation and Validation}
+
+To evaluate the model the previously set aside test-set was used.
 
 \subsection{Justification}
 
