@@ -397,9 +397,25 @@ were not tested for this parameter.
 
 \subsection{Model Evaluation and Validation}
 
-To evaluate the model the previously set aside test-set was used.
+To evaluate the model the previously set aside test-set was used. 
+
 
 \subsection{Justification}
+
+On the test-set the benchmark logistic regression model got an {\it auc} score of $0.56946$.
+The three models that have been used for further examination were all
+found slightly stronger than the benchmark model. The final 
+random forest model had a score of $0.57810$, the final SVM model a score of
+$0.57243$ and the final XGBoost model got a score of $0.65055$. 
+Figure \ref{roccurves} shows the ROC curves of the final model compared to the benchmark.
+
+\image{images/roc_curve.png}{ROC curves for different models}{roccurves}{120mm}
+\noindent
+So the XGBoost model is the one that can handle unseen data better than the other models.
+The overall score is not that good. As mentioned before the winning team of the
+Kaggle competition managed to get a score of $0.92360$. Because of that
+I would argue that the final solution is not significant enough to have 
+solved the problem.
 
 \section{Conclusion}
 
