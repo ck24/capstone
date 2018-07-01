@@ -398,7 +398,29 @@ were not tested for this parameter.
 \subsection{Model Evaluation and Validation}
 
 To evaluate the model the previously set aside test-set was used. 
+The parameters which had different values than the default value
+of the XGBoost model, that was found to be the strongest
+among those tested, were the following:
 
+\begin{center}
+    \begin{tabular}{l|r}
+        {\bf Parameter} & {\bf Value} \\ \hline 
+        Max Depth & $10$  \\
+        Min Child Weight & $1$  \\
+        Gamma & $0.5$  \\
+        Learning Rate & $0.4$  \\
+        \# of Estimators & $1000$  \\
+    \end{tabular}
+\end{center}
+\noindent
+The parameter-values of this final model were found using grid-search with many
+different values. They gave the best results on the training-set. Cross-validation
+with $10$ folds was used to train the hyperparameters and the mean {\it auc}
+score of the final model was very promissing, giving a score of about $0.83897$.
+Unfortunately though the model does not seem to generalize very well 
+because the {\it auc} score on the test-set is rather low. 
+This indicates that the model is not as robust as desired and results found
+by the model cannot be trusted.
 
 \subsection{Justification}
 
@@ -415,18 +437,63 @@ So the XGBoost model is the one that can handle unseen data better than the othe
 The overall score is not that good. As mentioned before the winning team of the
 Kaggle competition managed to get a score of $0.92360$. Because of that
 I would argue that the final solution is not significant enough to have 
-solved the problem.
-
+solved the problem. At least it is better than the benchmark and far better than
+random guessing.
+\newpage
 \section{Conclusion}
 
 \subsection{Free-Form Visualization}
 
+Figure \ref{learningcurves} shows the performance
+of the final XGBoost model on the training and validation set 
+as a function on the training-set size.
+
+\image{images/learning_curves.png}{Learning curves of final XGBoost model}{learningcurves}{120mm}
+\noindent
+It is evident that the model is overfitting because there is a clear gap
+between the training scores and the validation scores, where the training
+scores are much higher.
+
 \subsection{Reflection}
 
+The overall process can be summarized as follows:
+
+\begin{itemize}
+    \item Analysis of the problem and data
+    \item Splitting data into distinct training- and testing-sets
+    \item Preprocess the data, i.e. one-hot-encode the categorial features
+    \item Training different models on the training-set
+    \item Picking the three models with the best performance on the training set
+    \item Try to improve the best models by modifying the hyperparameters of the
+    best three models
+    \item Apply the preprocessing step to the test-set
+    \item Evaluate the performance of the models on the test-set
+    \item Compre the final models with the benchmark
+\end{itemize}
+\noindent
+One of the biggest problems or challenges of this project was that training
+and evaluating the models took a lot of time. Especially the SVM model is
+very computational expensive. Because of the high-dimensionality of the problem,
+having more than $14,000$ features, it is not possible to draw decision
+boundaries and therefore not possible to get a mental image of the solution.
+It was also hard to find a good solution that generalizes well and give
+good results on both the training- and testing-sets. In the end I was not
+able to achieve good {\it auc} scores on both sets. 
+Nontheless it was interesting to work on this project
+because it allowed me to get a hands on experience on a real world problem
+and to apply some of my knowledge which I gained during this Udacity course.
 \subsection{Improvement}
 
-Probably the number of trees in the random forest model could be increased to 
-improve the performance. But this also increases the computation time and has therefore be neglected.
+With a better computer that had more CPU power it would be possible to 
+try a lot more different sets of parameters for the models.
+For example the number of trees in the random forest model could probabaly 
+be increased in order to improve the performance. 
+Using different kernels for the SVM might be another possibility for improvement. 
+A good approach might also be to reduce the dimensionality of the problem by 
+performing a principle component analysis. This step could be integrated into
+the preprocessing pipeline. Another aspect is that figure \ref{learningcurves} 
+shows that the validation score goes up when the training size increases. 
+The different models might therefore benefit from more training data. 
 
 \begin{thebibliography}{9}
 
