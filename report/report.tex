@@ -82,16 +82,22 @@ historical data, that
  The model will take an employee's role information and a resource code and will return whether 
  or not access should be granted.''}
 \\ \\
-This is a supervised learning problem because the dataset is labeled. 
+This is a classification problem where the model takes a user's role
+information and a resource as input and produces the expected output,
+i.e. whether the access to the resource will be granted or denied.
+This is also a supervised learning problem because the dataset is labeled. 
 Anticipated solution:
 
 \begin{enumerate}
     \item Explore data in order to gain insights.
+    \item Split the data into a training- and testing set using 
+    a stratified split.
     \item Train many different binary classification models using standard parameters.
     \item Apply transformations or regularizations.
     \item Compare plain models and transformed models.
     \item Pick the three best models based on the performance metric.
-    \item Tweak the chosen models in order to improve model performance.
+    \item Tweak the chosen models in order to improve model performance using
+    K-fold cross-validation
     \item Evaluate the tweaked models on the test set.
     \item Conclusion
 \end{enumerate}
@@ -162,29 +168,64 @@ a dumb model that always predicts $1$ would have a very high accuracy.
 
 \subsection{Algorithms and Techniques}
 
-First of all it is important to put aside a test set. This set will not be touched until the very end
-when all models have been trained and optimized. To generate the test set
+First of all it is important to put aside a test set. This set will not be 
+touched until the very end when all models have been trained and optimized. 
+To generate the test set
 \fnurl{stratified shuffle split}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedShuffleSplit.html}  
-will be used which preserves the percentage of samples for each class.
+will be used which preserves the percentage of samples for each class. This is
+important because the unbalanced structure of the dataset needs to be reflected.
+Otherwise in an admittedly extreme case it would be possible that all the negative
+classes ended up in the test set and the model had no chance of knowing when the
+access to a resource should be denied.
 A preprocessing pipeline will be created, that selects role attributes and applies
-one-hot encoding to them. This step is important because, as mentioned before,
+one-hot encoding to them. One-hot encoding works as follows. Lets say we
+have a categorial feature with the possible outcomes  
+{\tt Dog, Cat} and {\tt Bird}. The algorithm 
+would transform that categorial feature with three possible values into 
+three binary features where only the entry corresponding to the respective
+category is $1$ (hot) and othersize zero (cold). E.g. a data row with the
+category {\tt Dog} would become $(1, 0, 0)$ and a data row with the category
+{\tt Bird} would be become $(0, 0, 1)$.
+This step is important because, as mentioned before,
 the attributes are categorial and two values that are close to each other are not
 more similar than two values with a larger distance.
 Different binary classification models with standard parameters will be created.
 The classifiers trained in this project are Logistic Regression, 
 Decision Tree, SVM, Random Forest, AdaBoost and XGBoost.
 They will be initialized with a fixed random seed in order to make the results reproducable.
-There performance will be measured using scikit learn's 
-\fnurl{cross validation score}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html} 
-function in order to circumvent overfitting. 
-The best models will be tweaked by trying different sets of parameters.
-The goal is to furhter increase their performance. The better set of hyperparameters
-for the different models will be determined by doing a
+\\ \\
+The performance of the models will be measured using scikit learn's 
+\fnurl{cross validation score }{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html}
+function.
+It is a mistake to train and test a model on the same dataset. 
+Therefore the data is split into two separate sets.
+When tweaking the hyperparamters of a model on the test set it is still
+possible that the model is overfitting because knowledge about the test set
+might be provided to the model. To circumvent this situation one could split
+the data into three sets. A training set, a validation set and a test set.
+But this further reduces the data in the training set 
+and for rather small datasets like the present one this solution is not appropriate.
+An alternative solution is to use a technique called {\it cross validation} (CV).
+CV eliminates the need of a separate validation set. Instead
+the training set is split into $k$ subsets called $folds$. The model is then
+trained on the data contained in the $k-1$ folds and validated on the remaining fold.
+This methodology is repeated $k$ times and the overall score of the model is the
+average of the $k$ individual results.
+\\ \\
+In order to improve the performance of the best models, their hyperparameters
+will be tweaked. The method of choice to find a better hyperparameter setting
+for the different models is called
 \fnurl{grid search}{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html}.
 Grid search will evaluate all combinations of a specified amount of parameters and values.
+If, for example, we would like to tweak two hyperparameters and would like to test
+$3$ different values for the first one and $4$ different values for the second one,
+grid search would test all possible $12$ combinations of parameter values
+and determine the best one.
 This is far more convenient than the tedious task of trying out a bunch of hyperparameters manually.
-Finally the previously generated test set will be used to determine
-whether the final model generalizes well.
+\\ \\
+The last step is to evaluate the goodness of the trained and tweaked models
+by calculating their {\it auc} score on the test set.
+The scores will show whether the final model generalizes well.
 
 \subsection{Benchmark}
 
@@ -439,7 +480,7 @@ Kaggle competition managed to get a score of $0.92360$. Because of that
 I would argue that the final solution is not significant enough to have 
 solved the problem. At least it is better than the benchmark and far better than
 random guessing.
-\newpage
+
 \section{Conclusion}
 
 \subsection{Free-Form Visualization}
